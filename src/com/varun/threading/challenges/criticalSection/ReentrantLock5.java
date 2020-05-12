@@ -1,6 +1,12 @@
-package com.varun.threading.dataSharing.resourceSharing;
+package com.varun.threading.challenges.criticalSection;
 
-public class ResourceSharingConcurrentThreadExec2 {
+/**
+ * Synchronized is a reentrant block.
+ * <p>
+ * Meaning once a thread enter such a block, it acquires the lock that was guarding that sync block and now the thread can
+ * execute any sync method calls within that method, that are also guarded by the lock that it acquired.
+ */
+public class ReentrantLock5 {
 
     public static void main(String[] args) throws InterruptedException {
         // heap shared, all class variables shared including the items
@@ -56,14 +62,36 @@ public class ResourceSharingConcurrentThreadExec2 {
         private int items = 0;
 
         public void increment() {
-            this.items++;
+            synchronized (this) {
+                this.items++;
+                // incrementing thread can access doNothing, since its guarded by the same lock that it has already accquired.
+                doNothingIncrementing();
+            }
         }
 
-        public void decrement() {
+        public void doNothingIncrementing() {
+            synchronized (this) {
+                // do nothing
+            }
+        }
+
+        public synchronized void decrement() {
             this.items--;
+            // the decrementing thread will eventually enter this acquiring lock on "this".
+            // all the other threads will be denied access to sync methods that are locked by lock : "this".
+            // However, decrementing thread can easily call one asynch method (guarded by lock : "this")
+            // from another asynch method guarded with the same lock.
+            // thus synchronised is also called reentrant lock
+            doNothingDecrementing();
         }
 
-        public int getItems() {
+        public synchronized void doNothingDecrementing() {
+            synchronized (this) {
+                // do nothing
+            }
+        }
+
+        public synchronized int getItems() {
             return this.items;
         }
 
