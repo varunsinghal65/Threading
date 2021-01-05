@@ -17,8 +17,8 @@ public class LockFreeStackVsBlockingStack {
         LockFreeThreadsafeStack<Integer> stack = new LockFreeThreadsafeStack<>();
         Random random = new Random();
         //create pushing and popping threads
-        int pushingThreads = 2;
-        int poppingThreads = 2;
+        int pushingThreads = 1;
+        int poppingThreads = 1;
         List<Thread> threads = new ArrayList<>();
         for (int i = 0; i < pushingThreads; i++) {
             Thread t = new Thread(() -> {
@@ -46,7 +46,7 @@ public class LockFreeStackVsBlockingStack {
         Thread.sleep(5000);
 
         //Check the operations performed on the stack by the threads
-        System.out.println(String.format("The number of operations performed on the stack in 5 seconds: %,d", stack.getCounter()));
+        System.out.println(String.format("The number of operations performed on the stack in 5 seconds: %,d", stack.getCounter()/1000000));
     }
 
     private static void testThreadSafeStack() throws InterruptedException {
